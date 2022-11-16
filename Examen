@@ -1,0 +1,23 @@
+import json
+
+from Mongodb import PyMongo
+from configur import variables
+def Consulata():
+    print("Consultar promedio")
+    ctrl=input("Dame el numero de control: ")
+    obj=PyMongo(variables)
+    filtro = {"control": ctrl}
+    atributos_estudiante = {"_id": 0, "nombre": 1}
+    atributos_kardex = {"_id": 0, "materia": 1, "calificacion": 1}
+    obj.conectar_MongoDB()
+    Alumno=obj.consulta_MongoBD("estudiantes",filtro,atributos_estudiante)
+    Materias=obj.consulta_MongoBD("kardex",filtro,atributos_kardex)
+    obj.desconectar_MongoBD()
+    if Alumno["resultado"]:
+        dirEstudiante={}
+        dirEstudiante["estudiante"]=Alumno["resultado"][0]["nombre"]
+        dirEstudiante["materias"]=Materias["resultado"]
+        return json.dumps(dirEstudiante)
+    else:
+        print("El alumno no existe")
+print(Consulata())
